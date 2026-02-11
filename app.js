@@ -162,7 +162,7 @@ function insertAtCursor(textarea, text) {
   textarea.selectionStart = textarea.selectionEnd = start + text.length;
 }
 
-function renderFieldPicker(eventType) {
+function renderFieldPicker(eventType, filterText = "") {
   const container = $("#field-picker");
   if (!container) return;
   const event = DATA.eventTypes.find(e => e.name === eventType);
@@ -170,7 +170,12 @@ function renderFieldPicker(eventType) {
     container.innerHTML = `<div class="muted">Select an event type to see available fields.</div>`;
     return;
   }
-  const fields = event.payloadFields;
+  const query = filterText.trim().toLowerCase();
+  const fields = event.payloadFields.filter(f => !query || f.toLowerCase().includes(query));
+  if (fields.length === 0) {
+    container.innerHTML = `<div class="muted">No fields match “${filterText}”.</div>`;
+    return;
+  }
   container.innerHTML = fields.map(f => `<button class="field-chip" data-field="${f}">{{${f}}}</button>`).join("");
 
   $$(".field-chip", container).forEach(btn => {
@@ -413,7 +418,8 @@ function showTemplateEditor(tpl) {
     <div class="form-group"><label>Body</label><textarea id="ed-body" rows="8">${t.body || ""}</textarea></div>
     <div class="form-group">
       <label>Available Event Fields</label>
-      <div class="field-picker" id="field-picker"></div>
+      <input id="field-filter" placeholder="Filter fields (e.g., session, item, link)">
+      <div class="field-picker" id="field-picker" style="margin-top:8px"></div>
       <div class="muted" style="margin-top:6px">Click a field to insert <code>{{field_name}}</code> into the body at the cursor.</div>
     </div>
     <div id="ed-validation"></div>
@@ -436,10 +442,14 @@ function showTemplateEditor(tpl) {
   });
 
   $("#ed-event")?.addEventListener("change", () => {
-    renderFieldPicker($("#ed-event").value);
+    renderFieldPicker($("#ed-event").value, $("#field-filter")?.value || "");
   });
 
-  renderFieldPicker(t.eventType || $("#ed-event")?.value);
+  $("#field-filter")?.addEventListener("input", (e) => {
+    renderFieldPicker($("#ed-event").value, e.target.value);
+  });
+
+  renderFieldPicker(t.eventType || $("#ed-event")?.value, $("#field-filter")?.value || "");
 
   $("#ed-save").addEventListener("click", () => {
     const updated = {
