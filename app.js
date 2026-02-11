@@ -16,11 +16,11 @@ const DATA = {
   ],
 
   topics: [
-    { id: 1, name: "Agenda Updates", description: "Agenda version changes and publishing notices.", sender: "agenda@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 312, events: ["agenda.version.finalized", "agenda.item.added"] },
-    { id: 2, name: "Document Sharing", description: "File uploads and new e-Places materials.", sender: "edelegate@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 487, events: ["document.file.uploaded", "document.version.published"] },
-    { id: 3, name: "Proposal Activity", description: "Proposal submissions, withdrawals, and sponsorships.", sender: "plenary@un.org", organ: "GA Plenary", status: "Draft", subscription: "Opt-in", subscribers: 0, events: ["proposal.submitted", "proposal.sponsorship.added", "proposal.withdrawn"] },
-    { id: 4, name: "Speaker List Changes", description: "Inscriptions and changes to speaker lists.", sender: "speakers@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 198, events: ["speakers.inscription.created"] },
-    { id: 5, name: "Session Notices", description: "Session opening and closing.", sender: "session@un.org", organ: null, status: "Live", subscription: "Mandatory", subscribers: 799, events: ["session.opened"] },
+    { id: 1, name: "Agenda Updates", description: "Agenda version changes and publishing notices.", sender: "agenda@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 312, events: ["agenda.version.finalized", "agenda.item.added"], filters: [] },
+    { id: 2, name: "Document Sharing", description: "File uploads and new e-Places materials.", sender: "edelegate@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 487, events: ["document.file.uploaded", "document.version.published"], filters: [] },
+    { id: 3, name: "Proposal Activity", description: "Proposal submissions, withdrawals, and sponsorships.", sender: "plenary@un.org", organ: "GA Plenary", status: "Draft", subscription: "Opt-in", subscribers: 0, events: ["proposal.submitted", "proposal.sponsorship.added", "proposal.withdrawn"], filters: [] },
+    { id: 4, name: "Speaker List Changes", description: "Inscriptions and changes to speaker lists.", sender: "speakers@un.org", organ: "GA Plenary", status: "Live", subscription: "Opt-out", subscribers: 198, events: ["speakers.inscription.created"], filters: [] },
+    { id: 5, name: "Session Notices", description: "Session opening and closing.", sender: "session@un.org", organ: null, status: "Live", subscription: "Mandatory", subscribers: 799, events: ["session.opened"], filters: [] },
   ],
 
   templates: [
@@ -186,6 +186,70 @@ function renderFieldPicker(eventType, filterText = "") {
   });
 }
 
+function renderTopicFilters(topic, selectedEvents) {
+  const container = $("#topic-filters");
+  const addBtn = $("#add-filter");
+  if (!container) return;
+
+  const availableEvents = selectedEvents || [];
+  topic.filters = topic.filters || [];
+  topic.filters = topic.filters.filter(f => availableEvents.includes(f.eventType));
+
+  if (availableEvents.length === 0) {
+    container.innerHTML = `<div class="muted">Select routed event types to add filters.</div>`;
+    if (addBtn) addBtn.disabled = true;
+    return;
+  }
+
+  if (addBtn) addBtn.disabled = false;
+
+  if (topic.filters.length === 0) {
+    container.innerHTML = `<div class="muted">No filters defined.</div>`;
+    return;
+  }
+
+  container.innerHTML = topic.filters.map((f, idx) => {
+    const eventOptions = availableEvents.map(ev => `<option value="${ev}" ${ev === f.eventType ? "selected" : ""}>${ev}</option>`).join("");
+    const payloadFields = DATA.eventTypes.find(e => e.name === f.eventType)?.payloadFields || [];
+    const fieldOptions = payloadFields.map(field => `<option value="${field}" ${field === f.field ? "selected" : ""}>${field}</option>`).join("");
+    return `
+      <div class="filter-row" data-idx="${idx}">
+        <select class="filter-event">${eventOptions}</select>
+        <select class="filter-field">${fieldOptions || "<option value=\"\">(no fields)</option>"}</select>
+        <select class="filter-operator">
+          <option value="equals" ${f.operator === "equals" ? "selected" : ""}>equals</option>
+          <option value="contains" ${f.operator === "contains" ? "selected" : ""}>contains</option>
+        </select>
+        <input class="filter-value" value="${f.value || ""}" placeholder="value">
+        <button class="button sm filter-remove">Remove</button>
+      </div>`;
+  }).join("");
+
+  $$(".filter-row", container).forEach(row => {
+    const idx = Number(row.dataset.idx);
+    const filter = topic.filters[idx];
+    $(".filter-event", row).addEventListener("change", (e) => {
+      filter.eventType = e.target.value;
+      const payloadFields = DATA.eventTypes.find(ev => ev.name === filter.eventType)?.payloadFields || [];
+      filter.field = payloadFields[0] || "";
+      renderTopicFilters(topic, availableEvents);
+    });
+    $(".filter-field", row).addEventListener("change", (e) => {
+      filter.field = e.target.value;
+    });
+    $(".filter-operator", row).addEventListener("change", (e) => {
+      filter.operator = e.target.value;
+    });
+    $(".filter-value", row).addEventListener("input", (e) => {
+      filter.value = e.target.value;
+    });
+    $(".filter-remove", row).addEventListener("click", () => {
+      topic.filters.splice(idx, 1);
+      renderTopicFilters(topic, availableEvents);
+    });
+  });
+}
+
 /* ══════════════════
    TOPICS PAGE
    ══════════════════ */
@@ -224,7 +288,7 @@ function renderTopicsTable() {
 
 function showTopicEditor(topic) {
   const isNew = !topic;
-  const t = topic || { name: "", description: "", sender: "", organ: "", status: "Draft", subscription: "Opt-out", events: [] };
+  const t = topic || { name: "", description: "", sender: "", organ: "", status: "Draft", subscription: "Opt-out", events: [], filters: [] };
 
   const eventOptions = DATA.eventTypes.map(e =>
     `<option value="${e.name}" ${t.events.includes(e.name) ? "selected" : ""}>${e.name}</option>`
@@ -257,14 +321,39 @@ function showTopicEditor(topic) {
       <select id="ed-events" multiple size="5">${eventOptions}</select>
       <div class="muted" style="margin-top:4px">Hold Ctrl/Cmd to select multiple. These are external event types from <strong>Railyard</strong> (event logging).</div>
     </div>
+    <div class="form-group">
+      <label>Event Filters (optional)</label>
+      <div class="filter-rows" id="topic-filters"></div>
+      <button class="button sm" id="add-filter">+ Add Filter</button>
+      <div class="muted" style="margin-top:6px">Apply simple field conditions per event type (equals / contains).</div>
+    </div>
     <div class="form-actions">
       <button class="button primary" id="ed-save">${isNew ? "Create Topic" : "Save Changes"}</button>
       <button class="button" id="ed-cancel">Cancel</button>
       ${!isNew ? `<button class="button danger" id="ed-delete">Delete</button>` : ""}
     </div>`;
 
+  const selectedEvents = () => [...$$("#ed-events option:checked")].map(o => o.value);
+
+  $("#ed-events").addEventListener("change", () => {
+    renderTopicFilters(t, selectedEvents());
+  });
+
+  $("#add-filter").addEventListener("click", () => {
+    const events = selectedEvents();
+    if (events.length === 0) return;
+    const eventType = events[0];
+    const payloadFields = DATA.eventTypes.find(e => e.name === eventType)?.payloadFields || [];
+    t.filters = t.filters || [];
+    t.filters.push({ eventType, field: payloadFields[0] || "", operator: "equals", value: "" });
+    renderTopicFilters(t, events);
+  });
+
+  renderTopicFilters(t, selectedEvents());
+
   $("#ed-cancel").addEventListener("click", closePanel);
   $("#ed-save").addEventListener("click", () => {
+    const events = selectedEvents();
     if (!isNew) {
       topic.name = $("#ed-name").value;
       topic.description = $("#ed-desc").value;
@@ -272,7 +361,8 @@ function showTopicEditor(topic) {
       topic.organ = $("#ed-organ").value || null;
       topic.subscription = $("#ed-sub").value;
       topic.status = $("#ed-status").value;
-      topic.events = [...$$("#ed-events option:checked")].map(o => o.value);
+      topic.events = events;
+      topic.filters = (t.filters || []).filter(f => events.includes(f.eventType));
     } else {
       DATA.topics.push({
         id: Math.max(...DATA.topics.map(t => t.id)) + 1,
@@ -283,7 +373,8 @@ function showTopicEditor(topic) {
         status: $("#ed-status").value,
         subscription: $("#ed-sub").value,
         subscribers: 0,
-        events: [...$$("#ed-events option:checked")].map(o => o.value),
+        events,
+        filters: (t.filters || []).filter(f => events.includes(f.eventType)),
       });
     }
     closePanel();
@@ -308,12 +399,16 @@ function renderRoutingTable() {
   if (!tbody) return;
   const rules = [];
   DATA.topics.forEach(t => {
-    t.events.forEach(ev => rules.push({ eventType: ev, topic: t.name, organ: t.organ }));
+    t.events.forEach(ev => {
+      const filterCount = (t.filters || []).filter(f => f.eventType === ev).length;
+      rules.push({ eventType: ev, topic: t.name, organ: t.organ, filters: filterCount });
+    });
   });
   tbody.innerHTML = rules.map(r => `
     <tr>
       <td><code>${r.eventType}</code></td>
       <td>${r.topic}${r.organ ? ` <span class="muted">(${r.organ})</span>` : ""}</td>
+      <td class="muted">${r.filters ? `${r.filters} filter${r.filters > 1 ? "s" : ""}` : "—"}</td>
     </tr>`).join("");
 }
 
