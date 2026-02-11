@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dispatch — Branding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="branding">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">✉️</span>
+        <span class="logo-text">Dispatch</span>
+      </div>
+      <div class="nav-section">Admin</div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🧭</span>
+          <span>Topics & Routing</span>
+        </a>
+        <a href="templates.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          <span>Templates</span>
+        </a>
+        <a href="messages.html" class="nav-item">
+          <span class="nav-icon">📬</span>
+          <span>Message Log</span>
+        </a>
+        <a href="branding.html" class="nav-item active">
+          <span class="nav-icon">🎨</span>
+          <span>Branding</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="page-title">Branding & Layout</div>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Base Layout Configuration</div>
+            <div class="card-subtitle">Applies to all email notifications. Logo, colours, and typography are hard-coded to UN standards.</div>
+          </div>
+        </div>
+        <div id="branding-form"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Live Email Preview</div>
+            <div class="card-subtitle">Shows the base layout wrapping a sample notification.</div>
+          </div>
+        </div>
+        <div id="branding-preview"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

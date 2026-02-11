@@ -46,6 +46,16 @@ const DATA = {
       body: "e-deleGATE update — {{digest_time}}\n\n{{#each topics}}\n**{{topic_name}}** ({{sender}})\n{{#each items}}\n• {{> item}}\n{{/each}}\n{{/each}}" },
   ],
 
+  branding: {
+    orgHeader: "United Nations — e-deleGATE",
+    footerDisclaimer: "This is an automated notification from e-deleGATE. Do not reply to this message.",
+    unsubscribePattern: "https://edelegate.un.org/preferences/{{recipient_id}}",
+    organHeaders: [
+      { organ: "GA Plenary", header: "General Assembly — 80th Session" },
+      { organ: "Security Council", header: "Security Council — 2026" },
+    ],
+  },
+
   recipients: [
     { name: "J. Okafor", entity: "Nigeria", prefs: [
       { topic: "Agenda Updates", cadence: "Immediate", channels: ["Email"] },
@@ -414,6 +424,103 @@ function showTemplateEditor(tpl) {
 }
 
 /* ══════════════════
+   BRANDING PAGE
+   ══════════════════ */
+
+function initBrandingPage() {
+  renderBrandingForm();
+  renderBrandingPreview();
+
+  $("#branding-save")?.addEventListener("click", () => {
+    DATA.branding.footerDisclaimer = $("#branding-footer").value;
+    DATA.branding.unsubscribePattern = $("#branding-unsubscribe").value;
+
+    const organRows = $$(".organ-row").map(row => ({
+      organ: $(".organ-name", row).value,
+      header: $(".organ-header", row).value,
+    })).filter(row => row.organ.trim());
+    DATA.branding.organHeaders = organRows;
+
+    renderBrandingPreview();
+  });
+
+  $("#branding-add-organ")?.addEventListener("click", () => {
+    DATA.branding.organHeaders.push({ organ: "", header: "" });
+    renderBrandingForm();
+  });
+}
+
+function renderBrandingForm() {
+  const container = $("#branding-form");
+  if (!container) return;
+
+  const organRows = DATA.branding.organHeaders.map((row, idx) => `
+    <div class="organ-row">
+      <input class="organ-name" value="${row.organ}" placeholder="Organ (e.g. GA Plenary)">
+      <input class="organ-header" value="${row.header}" placeholder="Organ header text">
+      <button class="button sm" data-remove="${idx}">Remove</button>
+    </div>`).join("");
+
+  container.innerHTML = `
+    <div class="form-group">
+      <label>UN Header (hard-coded)</label>
+      <input value="${DATA.branding.orgHeader}" disabled>
+      <div class="muted" style="margin-top:4px">Logo, colours, and typography are hard-coded to UN standards and apply to all emails.</div>
+    </div>
+    <div class="form-group">
+      <label>Footer disclaimer</label>
+      <textarea id="branding-footer">${DATA.branding.footerDisclaimer}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Unsubscribe URL pattern</label>
+      <input id="branding-unsubscribe" value="${DATA.branding.unsubscribePattern}">
+      <div class="muted" style="margin-top:4px">Use {{recipient_id}} placeholder. Applied to all emails.</div>
+    </div>
+    <div class="form-group">
+      <label>Organ header overrides</label>
+      <div class="organ-rows">${organRows || "<div class=\"muted\">No overrides configured.</div>"}</div>
+      <button class="button sm" id="branding-add-organ">+ Add organ header</button>
+    </div>
+    <div class="form-actions">
+      <button class="button primary" id="branding-save">Save Branding Settings</button>
+    </div>`;
+
+  $$("[data-remove]", container).forEach(btn => {
+    btn.addEventListener("click", () => {
+      DATA.branding.organHeaders.splice(+btn.dataset.remove, 1);
+      renderBrandingForm();
+      renderBrandingPreview();
+    });
+  });
+}
+
+function renderBrandingPreview() {
+  const el = $("#branding-preview");
+  if (!el) return;
+  const organHeader = DATA.branding.organHeaders[0]?.header || "";
+  el.innerHTML = `
+    <div class="email-frame">
+      <div class="email-header">
+        <div class="email-logo">🇺🇳</div>
+        <div>
+          <div class="email-title">${DATA.branding.orgHeader}</div>
+          ${organHeader ? `<div class="email-organ">${organHeader}</div>` : ""}
+        </div>
+      </div>
+      <div class="email-body">
+        <p>Dear delegate,</p>
+        <p>The agenda for <strong>GA Plenary</strong>, <strong>80th Session</strong> has been updated.</p>
+        <p>Item affected: Agenda Item 14</p>
+        <p><a href="#">View agenda →</a></p>
+      </div>
+      <div class="email-footer">
+        <p>${DATA.branding.footerDisclaimer}</p>
+        <p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════
    MESSAGES PAGE
    ══════════════════ */
 
@@ -557,5 +664,6 @@ const page = document.body.dataset.page;
 document.addEventListener("DOMContentLoaded", () => {
   if (page === "topics") initTopicsPage();
   if (page === "templates") initTemplatesPage();
+  if (page === "branding") initBrandingPage();
   if (page === "messages") { initMessagesPage(); renderDigestPreview(); }
 });

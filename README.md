@@ -13,13 +13,15 @@ Open `index.html` in a browser.
 
 ## Usage
 - `index.html` — topics, routing rules, external event types
-- `templates.html` — multilingual template management
+- `templates.html` — template management
 - `messages.html` — message artefacts log
+- `branding.html` — base layout + organ header overrides
 
 ## Structure
 - `index.html` — main topics view
 - `templates.html` — templates
 - `messages.html` — message log
+- `branding.html` — UN base layout + organ headers
 - `styles.css` — shared styles
 - `app.js` — shared mock data rendering
 
