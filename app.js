@@ -527,6 +527,8 @@ function renderBrandingPreview() {
 function initMessagesPage() {
   renderMessageTable();
   renderRecipientPrefs();
+  renderImmediatePreview();
+  renderDigestPreview();
   setupMessageFilters();
   setupTabs();
 
@@ -601,6 +603,34 @@ function renderRecipientPrefs() {
   });
 }
 
+function renderImmediatePreview() {
+  const el = $("#immediate-preview-content");
+  if (!el) return;
+  el.innerHTML = `
+    <div class="email-frame">
+      <div class="email-header">
+        <div class="email-logo">🇺🇳</div>
+        <div>
+          <div class="email-title">${DATA.branding.orgHeader}</div>
+          <div class="email-organ">General Assembly — 80th Session</div>
+        </div>
+      </div>
+      <div class="email-body">
+        <p><strong>From:</strong> agenda@un.org</p>
+        <p><strong>Subject:</strong> Agenda updated for 80th Session</p>
+        <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+        <p>Dear delegate,</p>
+        <p>The agenda for GA Plenary, 80th Session has been updated.</p>
+        <p>Item affected: Agenda Item 14<br>Version: v3</p>
+        <p><a href="#">View agenda →</a></p>
+      </div>
+      <div class="email-footer">
+        <p>${DATA.branding.footerDisclaimer}</p>
+        <p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p>
+      </div>
+    </div>`;
+}
+
 function renderDigestPreview() {
   const el = $("#digest-preview-content");
   if (!el) return;
@@ -624,22 +654,27 @@ function renderDigestPreview() {
   for (const [cadence, prefs] of Object.entries(byCadence)) {
     const topic_names = prefs.map(p => p.topic);
     const topics = DATA.topics.filter(t => topic_names.includes(t.name));
-    html += `<div class="section-header">${recipient.name}'s ${cadence} Digest</div>`;
-    html += `<p class="muted">Sent to: ${prefs[0].channels.join(", ")}</p>`;
+    html += `<div class="email-frame" style="margin-bottom:16px">`;
+    html += `<div class="email-header">`;
+    html += `<div class="email-logo">🇺🇳</div>`;
+    html += `<div><div class="email-title">${DATA.branding.orgHeader}</div><div class="email-organ">General Assembly — 80th Session</div></div>`;
+    html += `</div>`;
+    html += `<div class="email-body">`;
+    html += `<p><strong>Subject:</strong> e-deleGATE ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
     topics.forEach(t => {
       html += `<div class="topic-section">`;
-      html += `<div class="topic-section-title">📋 ${t.name} <span class="muted">(via ${t.sender})</span></div>`;
-      // Mock some items
+      html += `<div class="topic-section-title">${t.name} <span class="muted">(via ${t.sender})</span></div>`;
       t.events.slice(0, 2).forEach(ev => {
         const et = DATA.eventTypes.find(e => e.name === ev);
         html += `<div style="padding-left:14px">• ${et?.description || ev}</div>`;
       });
       html += `</div>`;
     });
-    html += `<hr style="border:none;border-top:1px solid var(--border);margin:10px 0">`;
+    html += `</div>`;
+    html += `<div class="email-footer"><p>${DATA.branding.footerDisclaimer}</p><p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p></div>`;
+    html += `</div>`;
   }
 
-  html += `<p class="muted">Manage preferences in your e-deleGATE settings.</p>`;
   el.innerHTML = html;
 }
 

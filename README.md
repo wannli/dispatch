@@ -20,7 +20,7 @@ Open `index.html` in a browser.
 ## Structure
 - `index.html` — main topics view
 - `templates.html` — templates
-- `messages.html` — message log
+- `messages.html` — message log + immediate/digest examples
 - `branding.html` — UN base layout + organ headers
 - `styles.css` — shared styles
 - `app.js` — shared mock data rendering

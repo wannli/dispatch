@@ -114,10 +114,11 @@
         <p class="footer-note">Each artefact is stored for audit. Digest messages bundle multiple topics when the recipient has the same cadence. Payload snapshots are preserved independently of event retention.</p>
       </section>
 
-      <!-- Tabbed section: preferences + digest preview -->
+      <!-- Tabbed section: preferences + previews -->
       <section class="card">
         <div class="tabs">
           <button class="tab active" data-tab="#tab-prefs">Recipient Preferences</button>
+          <button class="tab" data-tab="#tab-immediate">Immediate Example</button>
           <button class="tab" data-tab="#tab-digest">Digest Preview</button>
         </div>
 
@@ -135,6 +136,11 @@
             <tbody></tbody>
           </table>
           <p class="footer-note">Mandatory topics cannot be unsubscribed. Subscription model (mandatory / opt-out / opt-in) is configured per topic by the admin.</p>
+        </div>
+
+        <div class="tab-content" id="tab-immediate">
+          <div class="card-subtitle" style="margin-bottom:12px">Example immediate email rendered inside the UN base layout.</div>
+          <div class="template-preview" id="immediate-preview-content"></div>
         </div>
 
         <div class="tab-content" id="tab-digest">
