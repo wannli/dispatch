@@ -120,39 +120,25 @@
         <p class="footer-note">Each artefact is stored for audit. Digest messages bundle multiple topics when the recipient has the same cadence and sender identity. Payload snapshots are preserved independently of event retention.</p>
       </section>
 
-      <!-- Tabbed section: preferences + previews -->
       <section class="card">
-        <div class="tabs">
-          <button class="tab active" data-tab="#tab-prefs">Recipient Preferences</button>
-          <button class="tab" data-tab="#tab-immediate">Immediate Example</button>
-          <button class="tab" data-tab="#tab-digest">Digest Preview</button>
+        <div class="card-header">
+          <div>
+            <div class="card-title">Recipient Preferences</div>
+            <div class="card-subtitle">Each recipient sets cadence and channel per topic.</div>
+          </div>
         </div>
-
-        <div class="tab-content active" id="tab-prefs">
-          <div class="card-subtitle" style="margin-bottom:12px">Each recipient sets cadence and channel per topic. Change a cadence below to see how it affects the digest preview.</div>
-          <table class="table" id="prefs-table">
-            <thead>
-              <tr>
-                <th>Recipient</th>
-                <th>Topic</th>
-                <th>Cadence</th>
-                <th>Channels</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <p class="footer-note">Mandatory topics cannot be unsubscribed. Subscription model (mandatory / opt-out / opt-in) is configured per topic by the admin.</p>
-        </div>
-
-        <div class="tab-content" id="tab-immediate">
-          <div class="card-subtitle" style="margin-bottom:12px">Example immediate email rendered inside the UN base layout.</div>
-          <div class="template-preview" id="immediate-preview-content"></div>
-        </div>
-
-        <div class="tab-content" id="tab-digest">
-          <div class="card-subtitle" style="margin-bottom:12px">Live preview of how digests render per sender identity for J. Okafor. Change cadences in the Preferences tab to update.</div>
-          <div class="template-preview" id="digest-preview-content"></div>
-        </div>
+        <table class="table" id="prefs-table">
+          <thead>
+            <tr>
+              <th>Recipient</th>
+              <th>Topic</th>
+              <th>Cadence</th>
+              <th>Channels</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="footer-note">Mandatory topics cannot be unsubscribed. Subscription model (mandatory / opt-out / opt-in) is configured per topic by the admin.</p>
       </section>
     </main>
   </div>

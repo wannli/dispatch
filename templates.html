@@ -94,47 +94,6 @@
         <p class="footer-note">Three template types: <strong>Immediate</strong> (standalone per event), <strong>Digest Item</strong> (line item inside digest), <strong>Digest Wrapper</strong> (cross-topic structure with Handlebars iteration). Placeholders draw from event payload fields. English-only by default.</p>
       </section>
 
-      <!-- Previews -->
-      <section class="grid-two">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Immediate Preview</div></div>
-          <div class="template-preview">
-            <div class="section-header">Subject: Agenda updated for <span class="placeholder">{{session_name}}</span></div>
-            <p>Dear delegate,</p>
-            <p>The agenda for <span class="placeholder">{{organ}}</span>, <span class="placeholder">{{session_name}}</span> has been updated.</p>
-            <p>Item affected: <span class="placeholder">{{item_title}}</span><br>Version: <span class="placeholder">{{version}}</span></p>
-            <p><a href="#">View agenda →</a></p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">Digest Preview</div></div>
-          <div class="template-preview">
-            <div class="section-header">Your Dispatch digest — <span class="placeholder">{{digest_date}}</span></div>
-            <div class="topic-section">
-              <div class="topic-section-title">📋 Agenda Updates <span class="muted">(via agenda@un.org)</span></div>
-              <div style="padding-left:14px">• Agenda finalized for <span class="placeholder">{{session_name}}</span> — <span class="placeholder">{{item_title}}</span></div>
-              <div style="padding-left:14px">• New item added: <span class="placeholder">{{item_title}}</span> (#<span class="placeholder">{{item_number}}</span>)</div>
-            </div>
-            <div class="topic-section">
-              <div class="topic-section-title">📄 Document Sharing <span class="muted">(via edelegate@un.org)</span></div>
-              <div style="padding-left:14px">• <span class="placeholder">{{file_name}}</span> uploaded to <span class="placeholder">{{folder_name}}</span> by <span class="placeholder">{{uploader}}</span></div>
-            </div>
-            <hr style="border:none;border-top:1px solid #e6e8ef;margin:12px 0">
-            <p class="muted">Manage preferences in your Dispatch settings.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header"><div class="card-title">MS Teams Preview</div></div>
-          <div class="template-preview" style="background:#f3f0ff">
-            <div class="section-header">💬 Adaptive Card</div>
-            <p><strong>Agenda updated</strong> for <span class="placeholder">{{organ}}</span>, <span class="placeholder">{{session_name}}</span>.</p>
-            <p>Item: <span class="placeholder">{{item_title}}</span> | <a href="#">View</a></p>
-            <p class="muted" style="margin-top:8px">Rendered as Adaptive Card via Graph API / webhook.</p>
-          </div>
-        </div>
-      </section>
     </main>
   </div>
 

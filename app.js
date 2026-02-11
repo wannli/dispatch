@@ -471,7 +471,6 @@ function showTemplateEditor(tpl) {
 
 function initBrandingPage() {
   renderBrandingForm();
-  renderBrandingPreview();
 
   $("#branding-save")?.addEventListener("click", () => {
     DATA.branding.footerDisclaimer = $("#branding-footer").value;
@@ -482,8 +481,6 @@ function initBrandingPage() {
       header: $(".organ-header", row).value,
     })).filter(row => row.organ.trim());
     DATA.branding.organHeaders = organRows;
-
-    renderBrandingPreview();
   });
 
   $("#branding-add-organ")?.addEventListener("click", () => {
@@ -536,31 +533,6 @@ function renderBrandingForm() {
   });
 }
 
-function renderBrandingPreview() {
-  const el = $("#branding-preview");
-  if (!el) return;
-  const organHeader = DATA.branding.organHeaders[0]?.header || "";
-  el.innerHTML = `
-    <div class="email-frame">
-      <div class="email-header">
-        <div class="email-logo">🇺🇳</div>
-        <div>
-          <div class="email-title">${DATA.branding.orgHeader}</div>
-          ${organHeader ? `<div class="email-organ">${organHeader}</div>` : ""}
-        </div>
-      </div>
-      <div class="email-body">
-        <p>Dear delegate,</p>
-        <p>The agenda for <strong>GA Plenary</strong>, <strong>80th Session</strong> has been updated.</p>
-        <p>Item affected: Agenda Item 14</p>
-        <p><a href="#">View agenda →</a></p>
-      </div>
-      <div class="email-footer">
-        <p>${DATA.branding.footerDisclaimer}</p>
-        <p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p>
-      </div>
-    </div>`;
-}
 
 /* ══════════════════
    MESSAGES PAGE
@@ -569,18 +541,7 @@ function renderBrandingPreview() {
 function initMessagesPage() {
   renderMessageTable();
   renderRecipientPrefs();
-  renderImmediatePreview();
-  renderDigestPreview();
   setupMessageFilters();
-  setupTabs();
-
-  $$(".pref-cadence").forEach(sel => {
-    sel.addEventListener("change", (e) => {
-      const [ri, pi] = e.target.dataset.idx.split(",").map(Number);
-      DATA.recipients[ri].prefs[pi].cadence = e.target.value;
-      renderDigestPreview();
-    });
-  });
 }
 
 function renderMessageTable(filterTopic, filterType, filterStatus) {
@@ -640,107 +601,6 @@ function renderRecipientPrefs() {
     sel.addEventListener("change", (e) => {
       const [ri, pi] = e.target.dataset.idx.split(",").map(Number);
       DATA.recipients[ri].prefs[pi].cadence = e.target.value;
-      renderDigestPreview();
-    });
-  });
-}
-
-function renderImmediatePreview() {
-  const el = $("#immediate-preview-content");
-  if (!el) return;
-  el.innerHTML = `
-    <div class="email-frame">
-      <div class="email-header">
-        <div class="email-logo">🇺🇳</div>
-        <div>
-          <div class="email-title">${DATA.branding.orgHeader}</div>
-          <div class="email-organ">General Assembly — 80th Session</div>
-        </div>
-      </div>
-      <div class="email-body">
-        <p><strong>From:</strong> agenda@un.org</p>
-        <p><strong>Subject:</strong> Agenda updated for 80th Session</p>
-        <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-        <p>Dear delegate,</p>
-        <p>The agenda for GA Plenary, 80th Session has been updated.</p>
-        <p>Item affected: Agenda Item 14<br>Version: v3</p>
-        <p><a href="#">View agenda →</a></p>
-      </div>
-      <div class="email-footer">
-        <p>${DATA.branding.footerDisclaimer}</p>
-        <p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p>
-      </div>
-    </div>`;
-}
-
-function renderDigestPreview() {
-  const el = $("#digest-preview-content");
-  if (!el) return;
-
-  const recipient = DATA.recipients[0]; // Preview for first recipient
-  const digestPrefs = recipient.prefs.filter(p => p.cadence !== "Immediate");
-
-  if (digestPrefs.length === 0) {
-    el.innerHTML = `<p class="muted">${recipient.name} has all topics set to Immediate — no digest to preview.</p>`;
-    return;
-  }
-
-  // Group by cadence
-  const byCadence = {};
-  digestPrefs.forEach(p => {
-    if (!byCadence[p.cadence]) byCadence[p.cadence] = [];
-    byCadence[p.cadence].push(p);
-  });
-
-  let html = "";
-  for (const [cadence, prefs] of Object.entries(byCadence)) {
-    const topicNames = prefs.map(p => p.topic);
-    const topics = DATA.topics.filter(t => topicNames.includes(t.name));
-
-    // Group topics by sender identity
-    const bySender = {};
-    topics.forEach(t => {
-      if (!bySender[t.sender]) bySender[t.sender] = [];
-      bySender[t.sender].push(t);
-    });
-
-    Object.entries(bySender).forEach(([sender, senderTopics]) => {
-      html += `<div class="sender-label">Digest for sender identity: ${sender}</div>`;
-      html += `<div class="email-frame" style="margin-bottom:16px">`;
-      html += `<div class="email-header">`;
-      html += `<div class="email-logo">🇺🇳</div>`;
-      html += `<div><div class="email-title">${DATA.branding.orgHeader}</div><div class="email-organ">General Assembly — 80th Session</div></div>`;
-      html += `</div>`;
-      html += `<div class="email-body">`;
-      html += `<p><strong>From:</strong> ${sender}</p>`;
-      html += `<p><strong>Subject:</strong> Dispatch ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
-      senderTopics.forEach(t => {
-        html += `<div class="topic-section">`;
-        html += `<div class="topic-section-title">${t.name}</div>`;
-        t.events.slice(0, 2).forEach(ev => {
-          const et = DATA.eventTypes.find(e => e.name === ev);
-          html += `<div style="padding-left:14px">• ${et?.description || ev}</div>`;
-        });
-        html += `</div>`;
-      });
-      html += `</div>`;
-      html += `<div class="email-footer"><p>${DATA.branding.footerDisclaimer}</p><p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p></div>`;
-      html += `</div>`;
-    });
-  }
-
-  el.innerHTML = html;
-}
-
-function setupTabs() {
-  $$(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-      const group = tab.closest(".card");
-      $$(".tab", group).forEach(t => t.classList.remove("active"));
-      $$(".tab-content", group).forEach(c => c.classList.remove("active"));
-      tab.classList.add("active");
-      const target = $(tab.dataset.tab, group);
-      if (target) target.classList.add("active");
     });
   });
 }
@@ -754,5 +614,5 @@ document.addEventListener("DOMContentLoaded", () => {
   if (page === "topics") initTopicsPage();
   if (page === "templates") initTemplatesPage();
   if (page === "branding") initBrandingPage();
-  if (page === "messages") { initMessagesPage(); renderDigestPreview(); }
+  if (page === "messages") initMessagesPage();
 });
