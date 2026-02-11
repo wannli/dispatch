@@ -250,7 +250,7 @@ function showTopicEditor(topic) {
     <div class="form-group">
       <label>Routed Event Types</label>
       <select id="ed-events" multiple size="5">${eventOptions}</select>
-      <div class="muted" style="margin-top:4px">Hold Ctrl/Cmd to select multiple. These are external event types from the Event Logging system.</div>
+      <div class="muted" style="margin-top:4px">Hold Ctrl/Cmd to select multiple. These are external event types from <strong>Railyard</strong> (event logging).</div>
     </div>
     <div class="form-actions">
       <button class="button primary" id="ed-save">${isNew ? "Create Topic" : "Save Changes"}</button>
