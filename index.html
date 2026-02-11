@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-deleGATE — Topics & Routing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="topics">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">✉️</span>
+        <span class="logo-text">e-deleGATE</span>
+      </div>
+      <div class="nav-section">Admin</div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item active">
+          <span class="nav-icon">🧭</span>
+          <span>Topics & Routing</span>
+        </a>
+        <a href="templates.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          <span>Templates</span>
+        </a>
+        <a href="messages.html" class="nav-item">
+          <span class="nav-icon">📬</span>
+          <span>Message Log</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="page-title">Topics & Routing</div>
+
+      <header class="summary-bar">
+        <div class="summary-card">
+          <div class="summary-label">Active Topics</div>
+          <div class="summary-value">5</div>
+          <div class="summary-trend neutral">3 organ-scoped, 1 platform-wide</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Events Polled (last cycle)</div>
+          <div class="summary-value">47</div>
+          <div class="summary-trend neutral">Poll every 5 min</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Total Subscribers</div>
+          <div class="summary-value">799</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Bounce Rate</div>
+          <div class="summary-value">0.6%</div>
+        </div>
+      </header>
+
+      <!-- Topics -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Topics</div>
+            <div class="card-subtitle">Click a row to edit. Delivery cadence is set by each recipient, not here.</div>
+          </div>
+          <button class="button primary" id="btn-new-topic">+ New Topic</button>
+        </div>
+        <table class="table" id="topics-table">
+          <thead>
+            <tr>
+              <th>Topic / Organ</th>
+              <th>Description</th>
+              <th>Sender</th>
+              <th>Subscription</th>
+              <th>Subscribers</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <!-- Routing -->
+      <section class="grid-two">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Routing Rules</div>
+              <div class="card-subtitle">Derived from topic → event type mappings above.</div>
+            </div>
+          </div>
+          <table class="table" id="routing-table">
+            <thead>
+              <tr>
+                <th>Event Type</th>
+                <th>→ Topic</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="footer-note">Event types are defined in the Event Logging epic. The messaging system polls the event log every ~5 minutes and routes matching events into topics.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Event Type Catalog</div>
+              <div class="card-subtitle">External — from Event Logging system.</div>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Event Type</th>
+                <th>Description</th>
+                <th>Payload Fields</th>
+              </tr>
+            </thead>
+            <tbody id="event-catalog"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Panel -->
+  <div class="panel-overlay"></div>
+  <div class="panel"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

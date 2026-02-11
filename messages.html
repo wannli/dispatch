@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-deleGATE — Message Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="messages">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">✉️</span>
+        <span class="logo-text">e-deleGATE</span>
+      </div>
+      <div class="nav-section">Admin</div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🧭</span>
+          <span>Topics & Routing</span>
+        </a>
+        <a href="templates.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          <span>Templates</span>
+        </a>
+        <a href="messages.html" class="nav-item active">
+          <span class="nav-icon">📬</span>
+          <span>Message Log</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="page-title">Message Log</div>
+
+      <header class="summary-bar">
+        <div class="summary-card">
+          <div class="summary-label">Messages (24h)</div>
+          <div class="summary-value">394</div>
+          <div class="summary-trend up">↑ 6%</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Immediate</div>
+          <div class="summary-value">180</div>
+          <div class="summary-trend neutral">Email + Teams</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Digests Sent</div>
+          <div class="summary-value">214</div>
+          <div class="summary-trend neutral">Cross-topic bundles</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Bounces</div>
+          <div class="summary-value">5</div>
+          <div class="summary-trend neutral">0.6%</div>
+        </div>
+      </header>
+
+      <!-- Message log -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">Message Artefacts</div>
+        </div>
+        <div class="filters" style="margin-bottom:12px">
+          <div class="filter-group">
+            <label>Topic</label>
+            <select id="filter-msg-topic">
+              <option value="">All</option>
+              <option>Agenda Updates</option>
+              <option>Document Sharing</option>
+              <option>Proposal Activity</option>
+              <option>Speaker List Changes</option>
+              <option>Session Notices</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Type</label>
+            <select id="filter-msg-type">
+              <option value="">All</option>
+              <option>Immediate</option>
+              <option>Digest</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Status</label>
+            <select id="filter-msg-status">
+              <option value="">All</option>
+              <option>Delivered</option>
+              <option>Queued</option>
+              <option>Bounced</option>
+            </select>
+          </div>
+        </div>
+        <table class="table" id="message-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Topic(s)</th>
+              <th>Recipient</th>
+              <th>Channel</th>
+              <th>Sender</th>
+              <th>Status</th>
+              <th>Sent</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="footer-note">Each artefact is stored for audit. Digest messages bundle multiple topics when the recipient has the same cadence. Payload snapshots are preserved independently of event retention.</p>
+      </section>
+
+      <!-- Tabbed section: preferences + digest preview -->
+      <section class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="#tab-prefs">Recipient Preferences</button>
+          <button class="tab" data-tab="#tab-digest">Digest Preview</button>
+        </div>
+
+        <div class="tab-content active" id="tab-prefs">
+          <div class="card-subtitle" style="margin-bottom:12px">Each recipient sets cadence and channel per topic. Change a cadence below to see how it affects the digest preview.</div>
+          <table class="table" id="prefs-table">
+            <thead>
+              <tr>
+                <th>Recipient</th>
+                <th>Topic</th>
+                <th>Cadence</th>
+                <th>Channels</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="footer-note">Mandatory topics cannot be unsubscribed. Subscription model (mandatory / opt-out / opt-in) is configured per topic by the admin.</p>
+        </div>
+
+        <div class="tab-content" id="tab-digest">
+          <div class="card-subtitle" style="margin-bottom:12px">Live preview of how a digest would render for J. Okafor based on current preferences. Change cadences in the Preferences tab to update.</div>
+          <div class="template-preview" id="digest-preview-content"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-deleGATE — Templates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="templates">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">✉️</span>
+        <span class="logo-text">e-deleGATE</span>
+      </div>
+      <div class="nav-section">Admin</div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+          <span class="nav-icon">🧭</span>
+          <span>Topics & Routing</span>
+        </a>
+        <a href="templates.html" class="nav-item active">
+          <span class="nav-icon">📝</span>
+          <span>Templates</span>
+        </a>
+        <a href="messages.html" class="nav-item">
+          <span class="nav-icon">📬</span>
+          <span>Message Log</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="page-title">Templates</div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label>Type</label>
+          <select id="filter-tpl-type">
+            <option value="">All</option>
+            <option value="Immediate">Immediate</option>
+            <option value="Digest Item">Digest Item</option>
+            <option value="Digest Wrapper">Digest Wrapper</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Event Type</label>
+          <select id="filter-tpl-event">
+            <option value="">All</option>
+            <option value="agenda.version.finalized">agenda.version.finalized</option>
+            <option value="agenda.item.added">agenda.item.added</option>
+            <option value="document.file.uploaded">document.file.uploaded</option>
+            <option value="document.version.published">document.version.published</option>
+            <option value="proposal.submitted">proposal.submitted</option>
+            <option value="proposal.sponsorship.added">proposal.sponsorship.added</option>
+            <option value="proposal.withdrawn">proposal.withdrawn</option>
+          </select>
+        </div>
+        <button class="button primary" id="btn-new-template">+ New Template</button>
+      </div>
+
+      <!-- Template table -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Template Library</div>
+            <div class="card-subtitle">Click a row to edit. Placeholders are validated against event payload fields.</div>
+          </div>
+        </div>
+        <table class="table" id="template-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Event Type</th>
+              <th>Channel</th>
+              <th>Status</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p class="footer-note">Three template types: <strong>Immediate</strong> (standalone per event), <strong>Digest Item</strong> (line item inside digest), <strong>Digest Wrapper</strong> (cross-topic structure with Handlebars iteration). Placeholders draw from event payload fields. English-only by default.</p>
+      </section>
+
+      <!-- Previews -->
+      <section class="grid-two">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Immediate Preview</div></div>
+          <div class="template-preview">
+            <div class="section-header">Subject: Agenda updated for <span class="placeholder">{{session_name}}</span></div>
+            <p>Dear delegate,</p>
+            <p>The agenda for <span class="placeholder">{{organ}}</span>, <span class="placeholder">{{session_name}}</span> has been updated.</p>
+            <p>Item affected: <span class="placeholder">{{item_title}}</span><br>Version: <span class="placeholder">{{version}}</span></p>
+            <p><a href="#">View agenda →</a></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Digest Preview</div></div>
+          <div class="template-preview">
+            <div class="section-header">Your e-deleGATE digest — <span class="placeholder">{{digest_date}}</span></div>
+            <div class="topic-section">
+              <div class="topic-section-title">📋 Agenda Updates <span class="muted">(via agenda@un.org)</span></div>
+              <div style="padding-left:14px">• Agenda finalized for <span class="placeholder">{{session_name}}</span> — <span class="placeholder">{{item_title}}</span></div>
+              <div style="padding-left:14px">• New item added: <span class="placeholder">{{item_title}}</span> (#<span class="placeholder">{{item_number}}</span>)</div>
+            </div>
+            <div class="topic-section">
+              <div class="topic-section-title">📄 Document Sharing <span class="muted">(via edelegate@un.org)</span></div>
+              <div style="padding-left:14px">• <span class="placeholder">{{file_name}}</span> uploaded to <span class="placeholder">{{folder_name}}</span> by <span class="placeholder">{{uploader}}</span></div>
+            </div>
+            <hr style="border:none;border-top:1px solid #e6e8ef;margin:12px 0">
+            <p class="muted">Manage preferences in your e-deleGATE settings.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">MS Teams Preview</div></div>
+          <div class="template-preview" style="background:#f3f0ff">
+            <div class="section-header">💬 Adaptive Card</div>
+            <p><strong>Agenda updated</strong> for <span class="placeholder">{{organ}}</span>, <span class="placeholder">{{session_name}}</span>.</p>
+            <p>Item: <span class="placeholder">{{item_title}}</span> | <a href="#">View</a></p>
+            <p class="muted" style="margin-top:8px">Rendered as Adaptive Card via Graph API / webhook.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Panel -->
+  <div class="panel-overlay"></div>
+  <div class="panel"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
