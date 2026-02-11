@@ -84,8 +84,10 @@ const DATA = {
     { id: "MSG-4021", type: "Immediate", topic: "Agenda Updates", recipient: "J. Okafor", channel: "Email", sender: "agenda@un.org", status: "Delivered", sent: "2026-02-11 09:12", eventType: "agenda.version.finalized" },
     { id: "MSG-4022", type: "Immediate", topic: "Agenda Updates", recipient: "L. Dupont", channel: "Email", sender: "agenda@un.org", status: "Delivered", sent: "2026-02-11 09:12", eventType: "agenda.version.finalized" },
     { id: "MSG-4023", type: "Immediate", topic: "Agenda Updates", recipient: "L. Dupont", channel: "Teams", sender: "agenda@un.org", status: "Delivered", sent: "2026-02-11 09:12", eventType: "agenda.version.finalized" },
-    { id: "MSG-4018", type: "Digest (Hourly)", topic: "Agenda Updates + Document Sharing", recipient: "M. Chen", channel: "Email", sender: "edelegate@un.org", status: "Delivered", sent: "2026-02-11 10:00", eventType: "—" },
-    { id: "MSG-4019", type: "Digest (Daily)", topic: "Agenda Updates + Document Sharing", recipient: "A. García", channel: "Email", sender: "edelegate@un.org", status: "Queued", sent: "—", eventType: "—" },
+    { id: "MSG-4050", type: "Digest (Hourly)", topic: "Agenda Updates", recipient: "M. Chen", channel: "Email", sender: "agenda@un.org", status: "Delivered", sent: "2026-02-11 10:00", eventType: "—" },
+    { id: "MSG-4051", type: "Digest (Hourly)", topic: "Document Sharing", recipient: "M. Chen", channel: "Email", sender: "edelegate@un.org", status: "Delivered", sent: "2026-02-11 10:00", eventType: "—" },
+    { id: "MSG-4052", type: "Digest (Daily)", topic: "Agenda Updates", recipient: "A. García", channel: "Email", sender: "agenda@un.org", status: "Queued", sent: "—", eventType: "—" },
+    { id: "MSG-4053", type: "Digest (Daily)", topic: "Document Sharing", recipient: "A. García", channel: "Email", sender: "edelegate@un.org", status: "Queued", sent: "—", eventType: "—" },
     { id: "MSG-4015", type: "Immediate", topic: "Document Sharing", recipient: "K. Patel", channel: "Email", sender: "edelegate@un.org", status: "Bounced", sent: "2026-02-11 08:44", eventType: "document.file.uploaded" },
     { id: "MSG-4024", type: "Immediate", topic: "Session Notices", recipient: "J. Okafor", channel: "Teams", sender: "session@un.org", status: "Delivered", sent: "2026-02-11 11:00", eventType: "session.opened" },
     { id: "MSG-4025", type: "Immediate", topic: "Session Notices", recipient: "A. García", channel: "Teams", sender: "session@un.org", status: "Delivered", sent: "2026-02-11 11:00", eventType: "session.opened" },
@@ -692,27 +694,38 @@ function renderDigestPreview() {
 
   let html = "";
   for (const [cadence, prefs] of Object.entries(byCadence)) {
-    const topic_names = prefs.map(p => p.topic);
-    const topics = DATA.topics.filter(t => topic_names.includes(t.name));
-    html += `<div class="email-frame" style="margin-bottom:16px">`;
-    html += `<div class="email-header">`;
-    html += `<div class="email-logo">🇺🇳</div>`;
-    html += `<div><div class="email-title">${DATA.branding.orgHeader}</div><div class="email-organ">General Assembly — 80th Session</div></div>`;
-    html += `</div>`;
-    html += `<div class="email-body">`;
-    html += `<p><strong>Subject:</strong> e-deleGATE ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
+    const topicNames = prefs.map(p => p.topic);
+    const topics = DATA.topics.filter(t => topicNames.includes(t.name));
+
+    // Group topics by sender identity
+    const bySender = {};
     topics.forEach(t => {
-      html += `<div class="topic-section">`;
-      html += `<div class="topic-section-title">${t.name} <span class="muted">(via ${t.sender})</span></div>`;
-      t.events.slice(0, 2).forEach(ev => {
-        const et = DATA.eventTypes.find(e => e.name === ev);
-        html += `<div style="padding-left:14px">• ${et?.description || ev}</div>`;
+      if (!bySender[t.sender]) bySender[t.sender] = [];
+      bySender[t.sender].push(t);
+    });
+
+    Object.entries(bySender).forEach(([sender, senderTopics]) => {
+      html += `<div class="email-frame" style="margin-bottom:16px">`;
+      html += `<div class="email-header">`;
+      html += `<div class="email-logo">🇺🇳</div>`;
+      html += `<div><div class="email-title">${DATA.branding.orgHeader}</div><div class="email-organ">General Assembly — 80th Session</div></div>`;
+      html += `</div>`;
+      html += `<div class="email-body">`;
+      html += `<p><strong>From:</strong> ${sender}</p>`;
+      html += `<p><strong>Subject:</strong> e-deleGATE ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
+      senderTopics.forEach(t => {
+        html += `<div class="topic-section">`;
+        html += `<div class="topic-section-title">${t.name} <span class="muted">(via ${t.sender})</span></div>`;
+        t.events.slice(0, 2).forEach(ev => {
+          const et = DATA.eventTypes.find(e => e.name === ev);
+          html += `<div style="padding-left:14px">• ${et?.description || ev}</div>`;
+        });
+        html += `</div>`;
       });
       html += `</div>`;
+      html += `<div class="email-footer"><p>${DATA.branding.footerDisclaimer}</p><p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p></div>`;
+      html += `</div>`;
     });
-    html += `</div>`;
-    html += `<div class="email-footer"><p>${DATA.branding.footerDisclaimer}</p><p><a href="#">Manage notification preferences</a> · <a href="#">Unsubscribe</a></p></div>`;
-    html += `</div>`;
   }
 
   el.innerHTML = html;
