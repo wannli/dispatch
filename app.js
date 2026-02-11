@@ -705,6 +705,7 @@ function renderDigestPreview() {
     });
 
     Object.entries(bySender).forEach(([sender, senderTopics]) => {
+      html += `<div class="sender-label">Digest for sender identity: ${sender}</div>`;
       html += `<div class="email-frame" style="margin-bottom:16px">`;
       html += `<div class="email-header">`;
       html += `<div class="email-logo">🇺🇳</div>`;
@@ -715,7 +716,7 @@ function renderDigestPreview() {
       html += `<p><strong>Subject:</strong> e-deleGATE ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
       senderTopics.forEach(t => {
         html += `<div class="topic-section">`;
-        html += `<div class="topic-section-title">${t.name} <span class="muted">(via ${t.sender})</span></div>`;
+        html += `<div class="topic-section-title">${t.name}</div>`;
         t.events.slice(0, 2).forEach(ev => {
           const et = DATA.eventTypes.find(e => e.name === ev);
           html += `<div style="padding-left:14px">• ${et?.description || ev}</div>`;
