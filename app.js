@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════
-   e-deleGATE Topics & Messaging — Mock Data
+   Dispatch Topics & Messaging — Mock Data
    ══════════════════════════════════════════ */
 
 const DATA = {
@@ -41,14 +41,14 @@ const DATA = {
       subject: "Agenda updated: {{session_name}}",
       body: "**Agenda updated** for {{organ}}, {{session_name}}.\nItem: {{item_title}} | [View]({{link}})" },
     { id: 7, name: "Daily Digest Wrapper", type: "Digest Wrapper", eventType: "—", channel: "Email", status: "Live", updated: "2026-02-06",
-      body: "Your e-deleGATE digest — {{digest_date}}\n\n{{#each topics}}\n## {{topic_name}} (via {{sender}})\n{{#each items}}\n• {{> item}}\n{{/each}}\n{{/each}}\n\n---\nManage preferences in your e-deleGATE settings." },
+      body: "Your Dispatch digest — {{digest_date}}\n\n{{#each topics}}\n## {{topic_name}} (via {{sender}})\n{{#each items}}\n• {{> item}}\n{{/each}}\n{{/each}}\n\n---\nManage preferences in your Dispatch settings." },
     { id: 8, name: "Hourly Digest Wrapper", type: "Digest Wrapper", eventType: "—", channel: "Email", status: "Live", updated: "2026-02-06",
-      body: "e-deleGATE update — {{digest_time}}\n\n{{#each topics}}\n**{{topic_name}}** ({{sender}})\n{{#each items}}\n• {{> item}}\n{{/each}}\n{{/each}}" },
+      body: "Dispatch update — {{digest_time}}\n\n{{#each topics}}\n**{{topic_name}}** ({{sender}})\n{{#each items}}\n• {{> item}}\n{{/each}}\n{{/each}}" },
   ],
 
   branding: {
-    orgHeader: "United Nations — e-deleGATE",
-    footerDisclaimer: "This is an automated notification from e-deleGATE. Do not reply to this message.",
+    orgHeader: "United Nations — Dispatch",
+    footerDisclaimer: "This is an automated notification from Dispatch. Do not reply to this message.",
     unsubscribePattern: "https://edelegate.un.org/preferences/{{recipient_id}}",
     organHeaders: [
       { organ: "GA Plenary", header: "General Assembly — 80th Session" },
@@ -713,7 +713,7 @@ function renderDigestPreview() {
       html += `</div>`;
       html += `<div class="email-body">`;
       html += `<p><strong>From:</strong> ${sender}</p>`;
-      html += `<p><strong>Subject:</strong> e-deleGATE ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
+      html += `<p><strong>Subject:</strong> Dispatch ${cadence.toLowerCase()} digest — 11 Feb 2026</p>`;
       senderTopics.forEach(t => {
         html += `<div class="topic-section">`;
         html += `<div class="topic-section-title">${t.name}</div>`;

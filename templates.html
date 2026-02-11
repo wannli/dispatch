@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>e-deleGATE — Templates</title>
+  <title>Dispatch — Templates & Channels</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -36,7 +36,13 @@
     </aside>
 
     <main class="main">
-      <div class="page-title">Templates</div>
+      <header class="page-header">
+        <div>
+          <div class="page-eyebrow">Dispatch Console</div>
+          <h1 class="page-title">Templates</h1>
+          <p class="page-subtitle">Manage templates, channels, and preview layouts for every event type.</p>
+        </div>
+      </header>
 
       <div class="filters">
         <div class="filter-group">
@@ -104,7 +110,7 @@
         <div class="card">
           <div class="card-header"><div class="card-title">Digest Preview</div></div>
           <div class="template-preview">
-            <div class="section-header">Your e-deleGATE digest — <span class="placeholder">{{digest_date}}</span></div>
+            <div class="section-header">Your Dispatch digest — <span class="placeholder">{{digest_date}}</span></div>
             <div class="topic-section">
               <div class="topic-section-title">📋 Agenda Updates <span class="muted">(via agenda@un.org)</span></div>
               <div style="padding-left:14px">• Agenda finalized for <span class="placeholder">{{session_name}}</span> — <span class="placeholder">{{item_title}}</span></div>
@@ -115,7 +121,7 @@
               <div style="padding-left:14px">• <span class="placeholder">{{file_name}}</span> uploaded to <span class="placeholder">{{folder_name}}</span> by <span class="placeholder">{{uploader}}</span></div>
             </div>
             <hr style="border:none;border-top:1px solid #e6e8ef;margin:12px 0">
-            <p class="muted">Manage preferences in your e-deleGATE settings.</p>
+            <p class="muted">Manage preferences in your Dispatch settings.</p>
           </div>
         </div>
 

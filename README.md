@@ -3,7 +3,7 @@ created: 2026-02-11
 created-by: ai
 ---
 
-# e-deleGATE Topics & Messaging Mockup
+# Dispatch Topics & Messaging Mockup
 
 ## Purpose
 Static UI mockup for the topics, routing, templates, and messaging delivery epic. Events are treated as external inputs from **Railyard** (the event logging system).
