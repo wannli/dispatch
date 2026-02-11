@@ -130,7 +130,7 @@ function validatePlaceholders(body, eventType) {
   const et = DATA.eventTypes.find(e => e.name === eventType);
   if (!et) return { valid: true, message: "No event type to validate against." };
   const used = [...body.matchAll(/\{\{(\w+)\}\}/g)].map(m => m[1]);
-  const structural = ["digest_date", "digest_time", "topic_name", "sender"];
+  const structural = ["digest_date", "digest_time", "topic_name", "sender", "recipient_id"];
   const invalid = used.filter(f => !et.payloadFields.includes(f) && !structural.includes(f));
   if (invalid.length === 0) return { valid: true, message: `✓ All ${used.length} placeholders valid` };
   return { valid: false, message: `⚠ Unknown placeholders: ${invalid.join(", ")}` };
@@ -148,6 +148,35 @@ function openPanel() {
 function closePanel() {
   $(".panel-overlay")?.classList.remove("open");
   $(".panel")?.classList.remove("open");
+}
+
+function insertAtCursor(textarea, text) {
+  if (!textarea) return;
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const value = textarea.value;
+  textarea.value = value.slice(0, start) + text + value.slice(end);
+  textarea.focus();
+  textarea.selectionStart = textarea.selectionEnd = start + text.length;
+}
+
+function renderFieldPicker(eventType) {
+  const container = $("#field-picker");
+  if (!container) return;
+  const event = DATA.eventTypes.find(e => e.name === eventType);
+  if (!event) {
+    container.innerHTML = `<div class="muted">Select an event type to see available fields.</div>`;
+    return;
+  }
+  const fields = event.payloadFields;
+  container.innerHTML = fields.map(f => `<button class="field-chip" data-field="${f}">{{${f}}}</button>`).join("");
+
+  $$(".field-chip", container).forEach(btn => {
+    btn.addEventListener("click", () => {
+      const field = btn.dataset.field;
+      insertAtCursor($("#ed-body"), `{{${field}}}`);
+    });
+  });
 }
 
 /* ══════════════════
@@ -380,6 +409,11 @@ function showTemplateEditor(tpl) {
     </div>
     ${t.type !== "Digest Item" && t.type !== "Digest Wrapper" ? `<div class="form-group"><label>Subject Line</label><input id="ed-subject" value="${t.subject || ""}"></div>` : ""}
     <div class="form-group"><label>Body</label><textarea id="ed-body" rows="8">${t.body || ""}</textarea></div>
+    <div class="form-group">
+      <label>Available Event Fields</label>
+      <div class="field-picker" id="field-picker"></div>
+      <div class="muted" style="margin-top:6px">Click a field to insert <code>{{field_name}}</code> into the body at the cursor.</div>
+    </div>
     <div id="ed-validation"></div>
     <div class="form-actions">
       <button class="button primary" id="ed-save">${isNew ? "Create" : "Save"}</button>
@@ -398,6 +432,12 @@ function showTemplateEditor(tpl) {
     el.className = result.valid ? "validation-ok" : "validation-warn";
     el.textContent = result.message;
   });
+
+  $("#ed-event")?.addEventListener("change", () => {
+    renderFieldPicker($("#ed-event").value);
+  });
+
+  renderFieldPicker(t.eventType || $("#ed-event")?.value);
 
   $("#ed-save").addEventListener("click", () => {
     const updated = {

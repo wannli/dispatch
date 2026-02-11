@@ -308,6 +308,18 @@ body {
 .organ-row { display: grid; grid-template-columns: 1fr 1.2fr auto; gap: 8px; }
 .organ-row input { padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 12px; }
 
+/* Field picker */
+.field-picker { display: flex; flex-wrap: wrap; gap: 6px; }
+.field-chip {
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.field-chip:hover { background: #f1f5f9; }
+
 .email-frame {
   border: 1px solid var(--border);
   border-radius: 12px;
